@@ -43,7 +43,14 @@ function App() {
       <Typography variant="h4" gutterBottom>
         Resume Builder
       </Typography>
-      <Button onClick={() => handleAddSection('experience')}>Add Experience</Button>
+      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+        {!sections.some(s => s.type === 'personal') && (
+          <Button onClick={() => handleAddSection('personal')}>Add Personal Info</Button>
+        )}
+        <Button onClick={() => handleAddSection('experience')}>Add Experience</Button>
+        <Button onClick={() => handleAddSection('education')}>Add Education</Button>
+        <Button onClick={() => handleAddSection('skills')}>Add Skills</Button>
+      </Stack>
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="sections">
           {(provided) => (
@@ -52,10 +59,10 @@ function App() {
                 <Draggable key={section.type} draggableId={section.type} index={index}>
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                      {section.type === 'personal' && <PersonalSection />}
-                      {section.type === 'experience' && <ExperienceSection />}
-                      {section.type === 'education' && <EducationSection />}
-                      {section.type === 'skills' && <SkillsSection />}
+                      {section.type === 'personal' && <PersonalSection id={section.id} content={section.content} />}
+                      {section.type === 'experience' && <ExperienceSection id={section.id} content={section.content} />}
+                      {section.type === 'education' && <EducationSection id={section.id} content={section.content} />}
+                      {section.type === 'skills' && <SkillsSection id={section.id} content={section.content} />}
                     </div>
                   )}
                 </Draggable>

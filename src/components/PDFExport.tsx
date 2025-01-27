@@ -1,6 +1,7 @@
 import { Box, Button } from '@mui/material';
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { useResumeStore } from '../store/resumeStore';
+import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from 'react';
 
 const styles = StyleSheet.create({
   page: {
