@@ -5,6 +5,7 @@ import { PersonalSection } from './components/PersonalSection';
 import { ExperienceSection } from './components/ExperienceSection';
 import { EducationSection } from './components/EducationSection';
 import { SkillsSection } from './components/SkillsSection';
+import { PDFExport } from './components/PDFExport';
 import { useEffect } from 'react';
 import './App.css'
 
@@ -27,6 +28,7 @@ function App() {
   };
 
   const handleAddSection = (type: 'personal' | 'experience' | 'education' | 'skills') => {
+    if (type === 'personal' && sections.some(s => s.type === 'personal')) return;
     addSection({
       type,
       content: {},
@@ -48,7 +50,11 @@ function App() {
             <Stack spacing={3}>
               <Typography variant="h6">Add Sections</Typography>
               <Stack direction="row" spacing={1}>
-                <Button variant="contained" onClick={() => handleAddSection('personal')}>
+                <Button 
+                  variant="contained" 
+                  onClick={() => handleAddSection('personal')}
+                  disabled={sections.some(s => s.type === 'personal')}
+                >
                   Personal Info
                 </Button>
                 <Button variant="contained" onClick={() => handleAddSection('experience')}>
@@ -104,16 +110,22 @@ function App() {
           <Paper sx={{ flex: 1, p: 3 }}>
             <Typography variant="h6" gutterBottom>Preview</Typography>
             <Box sx={{ minHeight: 400 }}>
-              {sections.map((section) => (
-                <Box key={section.id} sx={{ mb: 3 }}>
-                  {section.type === 'personal' && <PersonalSection id={section.id} content={section.content} />}
-                  {section.type === 'experience' && <ExperienceSection id={section.id} content={section.content} />}
-                  {section.type === 'education' && <EducationSection id={section.id} content={section.content} />}
-                  {section.type === 'skills' && <SkillsSection id={section.id} content={section.content} />}
-                </Box>
-              ))}
-            </Box>
-          </Paper>
+              {sections
+                .filter((section, index, arr) => 
+                  section.type !== 'personal' || 
+                  arr.findIndex(s => s.type === 'personal') === index
+                )
+                .map((section) => (
+                  <Box key={section.id} sx={{ mb: 3 }}>
+                    {section.type === 'personal' && <PersonalSection id={section.id} content={section.content} />}
+                    {section.type === 'experience' && <ExperienceSection id={section.id} content={section.content} />}
+                    {section.type === 'education' && <EducationSection id={section.id} content={section.content} />}
+                    {section.type === 'skills' && <SkillsSection id={section.id} content={section.content} />}
+                  </Box>
+                ))}
+            <PDFExport />
+          </Box>
+        </Paper>
         </Box>
       </Container>
     </>
