@@ -20,6 +20,7 @@ function App() {
         order: 0,
       });
     }
+    console.log('Sections after useEffect:', sections);
   }, [sections.length, addSection]);
 
   const handleDragEnd = (result: any) => {
@@ -37,98 +38,35 @@ function App() {
   };
 
   return (
-    <>
+    <Container>
       <CssBaseline />
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
-          Resume Builder
-        </Typography>
-        
-        <Box sx={{ display: 'flex', gap: 3 }}>
-          {/* Editor Section */}
-          <Paper sx={{ flex: 1, p: 3, bgcolor: '#f5f5f5' }}>
-            <Stack spacing={3}>
-              <Typography variant="h6">Add Sections</Typography>
-              <Stack direction="row" spacing={1}>
-                <Button 
-                  variant="contained" 
-                  onClick={() => handleAddSection('personal')}
-                  disabled={sections.some(s => s.type === 'personal')}
-                >
-                  Personal Info
-                </Button>
-                <Button variant="contained" onClick={() => handleAddSection('experience')}>
-                  Experience
-                </Button>
-                <Button variant="contained" onClick={() => handleAddSection('education')}>
-                  Education
-                </Button>
-                <Button variant="contained" onClick={() => handleAddSection('skills')}>
-                  Skills
-                </Button>
-              </Stack>
-
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="resume-sections">
+      <Typography variant="h4" gutterBottom>
+        Resume Builder
+      </Typography>
+      <Button onClick={() => handleAddSection('experience')}>Add Experience</Button>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="sections">
+          {(provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {sections.map((section, index) => (
+                <Draggable key={section.type} draggableId={section.type} index={index}>
                   {(provided) => (
-                    <Box
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      sx={{ minHeight: 400 }}
-                    >
-                      {sections.map((section, index) => (
-                        <Draggable
-                          key={section.id}
-                          draggableId={section.id}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <Paper
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              ref={provided.innerRef}
-                              sx={{ p: 2, mb: 2, bgcolor: 'white' }}
-                              elevation={2}
-                            >
-                              {section.type === 'personal' && <PersonalSection id={section.id} content={section.content} />}
-                              {section.type === 'experience' && <ExperienceSection id={section.id} content={section.content} />}
-                              {section.type === 'education' && <EducationSection id={section.id} content={section.content} />}
-                              {section.type === 'skills' && <SkillsSection id={section.id} content={section.content} />}
-                            </Paper>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </Box>
+                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                      {section.type === 'personal' && <PersonalSection />}
+                      {section.type === 'experience' && <ExperienceSection />}
+                      {section.type === 'education' && <EducationSection />}
+                      {section.type === 'skills' && <SkillsSection />}
+                    </div>
                   )}
-                </Droppable>
-              </DragDropContext>
-            </Stack>
-          </Paper>
-
-          {/* Preview Section */}
-          <Paper sx={{ flex: 1, p: 3 }}>
-            <Typography variant="h6" gutterBottom>Preview</Typography>
-            <Box sx={{ minHeight: 400 }}>
-              {sections
-                .filter((section, index, arr) => 
-                  section.type !== 'personal' || 
-                  arr.findIndex(s => s.type === 'personal') === index
-                )
-                .map((section) => (
-                  <Box key={section.id} sx={{ mb: 3 }}>
-                    {section.type === 'personal' && <PersonalSection id={section.id} content={section.content} />}
-                    {section.type === 'experience' && <ExperienceSection id={section.id} content={section.content} />}
-                    {section.type === 'education' && <EducationSection id={section.id} content={section.content} />}
-                    {section.type === 'skills' && <SkillsSection id={section.id} content={section.content} />}
-                  </Box>
-                ))}
-            <PDFExport />
-          </Box>
-        </Paper>
-        </Box>
-      </Container>
-    </>
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <PDFExport />
+    </Container>
   );
 }
 
