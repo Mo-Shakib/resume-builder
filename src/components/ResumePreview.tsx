@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
   page: {
     padding: 30,
     fontFamily: 'Helvetica',
+    backgroundColor: '#ffffff',
+    color: '#000000',
   },
   section: {
     marginBottom: 10,
